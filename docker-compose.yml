@@ -11,8 +11,19 @@ services:
       - 5003:5000
     environment: 
       REDIS_URL: redis://redis:6379
+    networks: 
+      - back_mailer
+      - gateway
 
   redis:
     image: "redis"
     ports:
       - 6379:6379
+    networks: 
+      - back_mailer
+
+networks: 
+  gateway:
+    name: gateway
+  back_mailer:
+    name: back_mailer
