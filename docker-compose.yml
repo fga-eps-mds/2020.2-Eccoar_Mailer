@@ -1,0 +1,18 @@
+version: "3.5"
+services:
+  backend_mailer:
+    build: .
+    depends_on:
+      - redis
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    ports:
+      - 5003:5000
+    environment: 
+      REDIS_URL: redis://redis:6379
+
+  redis:
+    image: "redis"
+    ports:
+      - 6379:6379
