@@ -15,10 +15,10 @@ docker-compose up --build
 
 Para executar os testes basta rodar:
 ```
-docker run 20202-eccoar_users_backend_user npm run test
+docker run 20202-eccoar_emails_backend_mailer npm run test
 ```
 
 Para executar o lint rode:
 ```
-docker run 20202-eccoar_users_backend_user npm run lint
+docker run 20202-eccoar_emails_backend_mailer npm run lint
 ```

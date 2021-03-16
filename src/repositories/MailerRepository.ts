@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import { RedisClient } from 'redis';
 import RedisTemplate from '../db';
 
@@ -8,11 +7,19 @@ export default class MailerRepository {
 
     constructor() {
         this.redisTemplate = new RedisTemplate();
-        this.redisConnection = this.redisTemplate.getConnection()
+        this.redisConnection = this.redisTemplate.getConnection();
     }
-    
-    pong() {
+
+    async pong(): Promise<string> {
         this.redisConnection.set('ping', 'pong');
-        this.redisConnection.get('ping');
+        const result: string = await new Promise((resolve, reject) => {
+            this.redisConnection.get("ping", (e, data) => {
+                if (e) {
+                    reject(e);
+                }
+                resolve(data);
+            });
+        });
+        return result;
     }
 }
