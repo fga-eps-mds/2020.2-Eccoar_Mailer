@@ -3,6 +3,7 @@
    "version": "1.0.0",
    "description": "Email Service",
    "devDependencies": {
+      "@types/bull": "^3.15.0",
       "@types/cors": "^2.8.10",
       "@types/dotenv": "^8.2.0",
       "@types/express": "^4.17.11",
@@ -19,6 +20,7 @@
       "typescript": "3.3.3333"
    },
    "dependencies": {
+      "bull": "^3.21.0",
       "class-validator": "^0.13.1",
       "cors": "^2.8.5",
       "dotenv": "^8.2.0",
