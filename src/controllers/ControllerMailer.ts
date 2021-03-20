@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import QueueServices from '../services/QueueServices';
-import { configsEmail } from '../utils/configsEmail';
 import { EmailTemplate } from '../utils/EmailTemplate';
+
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export default class ControllerMailer {
 
@@ -29,7 +32,7 @@ export default class ControllerMailer {
 
     buildEmailMessage(email: string, subject: string, text: string): EmailTemplate {
         return {
-            from: configsEmail.auth.user,
+            from: process.env.EMAIL,
             to: email,
             subject: subject,
             text: text
