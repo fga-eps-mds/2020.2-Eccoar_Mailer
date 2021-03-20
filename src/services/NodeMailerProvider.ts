@@ -1,9 +1,9 @@
 import { MailerProvider } from "./MailerProvider";
 import * as nodemailer from 'nodemailer';
-import Mail from "nodemailer/lib/mailer";
+import { EmailTemplate } from "../utils/EmailTemplate";
 
 export class NodeMailerProvider implements MailerProvider {  
-    nodeMailerProvider: Mail;
+    nodeMailerProvider: nodemailer.Transporter;
 
     constructor(configs: object) {
         this.nodeMailerProvider = nodemailer.createTransport(configs);

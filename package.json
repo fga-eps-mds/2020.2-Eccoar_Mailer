@@ -31,6 +31,6 @@
       "start": "tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
       "build": "node ./build/server.js --env=production",
       "lint": "eslint . --ext .ts",
-      "test": "jest"
+      "test": "jest --forceExit"
    }
 }

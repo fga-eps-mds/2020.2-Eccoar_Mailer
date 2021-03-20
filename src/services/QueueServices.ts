@@ -1,14 +1,16 @@
 import * as Queue from 'bull';
 import { NodeMailerProvider } from '../services/NodeMailerProvider';
+import { MailerProvider } from '../services/MailerProvider';
 import { configsEmail } from '../utils/configsEmail';
-import * as env from 'dotenv'; 
+import * as env from 'dotenv';
+import { EmailTemplate } from '../utils/EmailTemplate';
 
 env.config();
 
 const { REDIS_URL } = process.env;
 
 export default class QueueServices {
-    mailerProvider: NodeMailerProvider;
+    mailerProvider: MailerProvider;
     queue: Queue.Queue;
     options: object;
 
@@ -25,7 +27,7 @@ export default class QueueServices {
     emailQueueProcess(): void {
         this.queue.process(async (job) => {
             console.log(">>>>> Process Job to Send EMAIL");
-            await this.mailerProvider.sendMail(job.data).then(response => {
+            await this.mailerProvider.sendMail(job.data).then(() => {
                 console.log(">>>>> Finish Send Email");
                 job.moveToCompleted('done', true);
             }).catch(err => {

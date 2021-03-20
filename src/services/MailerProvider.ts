@@ -1,3 +1,5 @@
+import { EmailTemplate } from "../utils/EmailTemplate";
+
 export interface MailerProvider {
-    sendMail(description: object): void; 
+    sendMail(email: EmailTemplate): Promise<void>; 
 }

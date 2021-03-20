@@ -1,4 +1,4 @@
-type EmailTemplate = {
+export interface EmailTemplate {
     from: string,
     to: string,
     subject: string,
