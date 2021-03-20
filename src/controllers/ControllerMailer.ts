@@ -24,7 +24,7 @@ export default class ControllerMailer {
         const response = {
             ping: responsePong,
         }
-        mailerRepository.emailQueueProcess();
+        mailerRepository.emailQueueProcess(resp);
         resp.status(200).json(response);
     }
 
@@ -39,7 +39,8 @@ export default class ControllerMailer {
        const mailerRepository = new QueueServices();
 
        mailerRepository.addMailQueue(emailMessage);
-       mailerRepository.emailQueueProcess();
+
+       mailerRepository.emailQueueProcess(resp);
 
     }
 

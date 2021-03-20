@@ -2,6 +2,7 @@ import { sendMailQueue } from '../db';
 import Queue from 'bull';
 import { NodeMailerProvider } from '../services/NodeMailerProvider';
 import { configsEmail } from '../utils/configsEmail';
+import { Response } from 'express';
 
 
 export default class QueueServices {
@@ -17,14 +18,16 @@ export default class QueueServices {
         this.redisTemplate.add(email);
     }
 
-    async emailQueueProcess(): Promise<void> {
+    async emailQueueProcess(resp: Response): Promise<void> {
         // n utilizar essa linha
         this.redisTemplate.process((job) => {
             console.log(job.data)
             
             try {
                 this.mailerProvider.sendMail(job.data);
+                resp.sendStatus(200);
             } catch (err) {
+                resp.sendStatus(400);
             }
         });
     }
