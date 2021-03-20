@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-
 export const configsEmail = {
     service: process.env.SERVICE,
     auth: {

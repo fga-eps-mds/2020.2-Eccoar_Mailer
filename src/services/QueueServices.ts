@@ -1,34 +1,37 @@
-import { sendMailQueue } from '../db';
-import Queue from 'bull';
+import * as Queue from 'bull';
 import { NodeMailerProvider } from '../services/NodeMailerProvider';
 import { configsEmail } from '../utils/configsEmail';
-import { Response } from 'express';
+import * as env from 'dotenv'; 
 
+env.config();
+
+const { REDIS_URL } = process.env;
 
 export default class QueueServices {
-    redisTemplate: Queue.Queue;
     mailerProvider: NodeMailerProvider;
+    queue: Queue.Queue;
+    options: object;
 
     constructor() {
-        this.redisTemplate = sendMailQueue;
+        this.options = {attemps: 2, delay: 5000}
+        this.queue = new Queue('send-email-queue', REDIS_URL, this.options);
         this.mailerProvider = new NodeMailerProvider(configsEmail);
     }
 
-    async addMailQueue(email: object): Promise<void> {
-        this.redisTemplate.add(email);
+    addMailQueue(email: EmailTemplate): void {
+        this.queue.add(email);
     }
 
-    async emailQueueProcess(resp: Response): Promise<void> {
-        // n utilizar essa linha
-        this.redisTemplate.process((job) => {
-            console.log(job.data)
-            
-            try {
-                this.mailerProvider.sendMail(job.data);
-                resp.sendStatus(200);
-            } catch (err) {
-                resp.sendStatus(400);
-            }
+    emailQueueProcess(): void {
+        this.queue.process(async (job) => {
+            console.log(">>>>> Process Job to Send EMAIL");
+            await this.mailerProvider.sendMail(job.data).then(response => {
+                console.log(">>>>> Finish Send Email");
+                job.moveToCompleted('done', true);
+            }).catch(err => {
+                console.log(">>>> Job Failed: " + err.message);
+                job.moveToFailed({message: 'job failed'})
+            });
         });
     }
 }

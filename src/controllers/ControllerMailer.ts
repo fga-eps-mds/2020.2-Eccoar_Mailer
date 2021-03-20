@@ -18,33 +18,35 @@ export default class ControllerMailer {
         resp.status(200).json(pingPong);
     }
 
-    async redisPong(req: Request, resp: Response): Promise<void> {
+    redisPong(req: Request, resp: Response): void {
         const mailerRepository = new QueueServices();
-        const responsePong = await mailerRepository.addMailQueue({'ping': 'pong'});
+        const responsePong = mailerRepository.addMailQueue({'from': 'ping', 'subject': 'pong', 'text': 'ping', 'to': 'pong'});
         const response = {
             ping: responsePong,
         }
-        mailerRepository.emailQueueProcess(resp);
+        mailerRepository.emailQueueProcess();
         resp.status(200).json(response);
     }
 
     sendEmail(req: Request, resp: Response): void {
-
-        const toEmail = String(req.query.toEmail);
-        const title = String(req.query.title);
-        const description = String(req.query.description);
-
-        const emailMessage = this.buildEmailMessage(toEmail, title, description);
-
-       const mailerRepository = new QueueServices();
-
-       mailerRepository.addMailQueue(emailMessage);
-
-       mailerRepository.emailQueueProcess(resp);
-
+        const email = String(req.query.email);
+        const subject = String(req.query.subject);
+        const text = String(req.query.text);
+        console.log(email !== undefined);
+        if (email !== 'undefined' && subject !== 'undefined' && text !== 'undefined') {
+            console.log(email);
+            const emailMessage = this.buildEmailMessage(email, subject, text);
+            const mailerRepository = new QueueServices();
+            mailerRepository.addMailQueue(emailMessage);
+            mailerRepository.emailQueueProcess();
+            resp.sendStatus(200);
+        } else {
+            console.log(email)
+            resp.status(400).json({'error': 'error to get email values'});
+        }
     }
 
-    buildEmailMessage(email: string, subject: string, text: string): object {
+    buildEmailMessage(email: string, subject: string, text: string): EmailTemplate {
         return {
             from: configsEmail.auth.user,
             to: email,

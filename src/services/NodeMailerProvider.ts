@@ -9,13 +9,16 @@ export class NodeMailerProvider implements MailerProvider {
         this.nodeMailerProvider = nodemailer.createTransport(configs);
     }
 
-    sendMail(description: object): void {
-        this.nodeMailerProvider.sendMail(description, (err, response) => {
-            if(err) {
-                throw new Error(err.message);
-            } 
-            console.log(response);
+    async sendMail(email: EmailTemplate): Promise<void> {
+        console.log(">>>>> SEND EMAIL");
+        return new Promise((resolve, reject) => {
+                this.nodeMailerProvider.sendMail(email, (err, response) => {
+                if(err) {
+                    reject(err);
+                }
+                resolve(response);
+            });
+            this.nodeMailerProvider.close();
         });
-        this.nodeMailerProvider.close();
     }
 }
