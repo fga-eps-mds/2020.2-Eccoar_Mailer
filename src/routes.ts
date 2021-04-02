@@ -9,8 +9,8 @@ routers.get('/api/ping', (req: Request, resp: Response) => {
 	controller.pong(req, resp);
 });
 
-routers.get('/api/sendMail', (req: Request, resp: Response) => {
-	controller.sendEmail(req, resp);
+routers.post("/api/sendMail", (req: Request, resp: Response) => {
+    controller.sendEmail(req, resp);
 });
 
 export default routers;

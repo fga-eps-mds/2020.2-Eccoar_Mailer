@@ -3,47 +3,46 @@ import QueueServices from '@services/QueueServices';
 import { EmailTemplate } from '@utils/EmailTemplate';
 
 import * as dotenv from 'dotenv';
+import { CategoryEmail } from '../utils/CategoryEmail';
 
 dotenv.config();
 
 export default class ControllerMailer {
-	pong(req: Request, resp: Response): void {
-		const pingPong = {
-			ping: 'pong',
-		};
-		resp.status(200).json(pingPong);
-	}
+    
+    queueService: QueueServices;
+    
+    constructor() {
+        this.queueService = new QueueServices();
+    }
 
-	sendEmail(req: Request, resp: Response): void {
-		const email = String(req.query.email);
-		const subject = String(req.query.subject);
-		const text = String(req.query.text);
-		if (
-			email !== 'undefined' &&
-			subject !== 'undefined' &&
-			text !== 'undefined'
-		) {
-			const emailMessage = this.buildEmailMessage(email, subject, text);
-			const queueService = new QueueServices();
-			const options = { attempts: 2, delay: 5000 };
-			queueService.addMailQueue(emailMessage, options);
-			queueService.emailQueueProcess();
-			resp.sendStatus(200);
-		} else {
-			resp.status(400).json({ error: 'error to get email values' });
-		}
-	}
+    pong(req: Request, resp: Response): void {
+        const pingPong = {
+            ping: 'pong',
+        };
+        resp.status(200).json(pingPong);
+    }
 
-	buildEmailMessage(
-		email: string,
-		subject: string,
-		text: string,
-	): EmailTemplate {
-		return {
-			from: process.env.EMAIL,
-			to: email,
-			subject: subject,
-			text: text,
-		};
-	}
+    sendEmail(req: Request, resp: Response): void {
+        const reportName = String(req.body.reportName);
+        const category = String(req.body.category);
+        const location = String(req.body.location);
+        if (reportName !== 'undefined' && category !== 'undefined' && location !== 'undefined') {
+            const emailCategory = CategoryEmail[category];
+            const emailMessage = this.buildEmailMessage(location, reportName, emailCategory);
+            this.queueService.addMailQueue(emailMessage);
+            this.queueService.emailQueueProcess();
+            resp.sendStatus(200);
+        } else {
+            resp.status(400).json({'error': 'error to get email values'});
+        }
+    }
+
+    buildEmailMessage(location: string, reportName: string, emailCategory: string): EmailTemplate {
+        return {
+            from: process.env.EMAIL,
+            to: emailCategory,
+            subject: `TESTE RELATÓRIO`,
+            text: `Nós somos da ECCODIPROJ\n\n\n\n\nTESTEI COMENDO O CU DE QUEM TA LENDO taí seu relatório babaca ${location}`
+        }
+    }
 }
