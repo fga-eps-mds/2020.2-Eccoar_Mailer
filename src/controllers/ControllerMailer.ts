@@ -28,7 +28,7 @@ export default class ControllerMailer {
         const location = String(req.body.location);
         if (reportName !== 'undefined' && category !== 'undefined' && location !== 'undefined') {
             const emailCategory = CategoryEmail[category];
-            const emailMessage = this.buildEmailMessage(location, reportName, emailCategory);
+            const emailMessage = this.buildEmailMessage(location, emailCategory);
             this.queueService.addMailQueue(emailMessage);
             this.queueService.emailQueueProcess();
             resp.sendStatus(200);
@@ -37,12 +37,12 @@ export default class ControllerMailer {
         }
     }
 
-    buildEmailMessage(location: string, reportName: string, emailCategory: string): EmailTemplate {
+    buildEmailMessage(location: string, emailCategory: string): EmailTemplate {
         return {
             from: process.env.EMAIL,
             to: emailCategory,
-            subject: `TESTE RELATÓRIO`,
-            text: `Nós somos da ECCODIPROJ\n\n\n\n\nTESTEI COMENDO O CU DE QUEM TA LENDO taí seu relatório babaca ${location}`
+            subject: `RELATÓRIO ECCOAR ${new Date().toDateString()}`,
+            text: `Aqui está o seu relatório do projeto eccoar\nLink: ${location}`
         }
     }
 }
