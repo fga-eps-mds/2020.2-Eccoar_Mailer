@@ -36,8 +36,24 @@
    "scripts": {
       "start": "tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts",
       "build": "node ./build/server.js --env=production",
-      "lint": "eslint . --ext .ts",
       "lint-report": "eslint . --ext .ts --output-file ./lint-report.html --format html",
-      "test": "jest --forceExit"
-   }
+      "test": "jest --forceExit",
+      "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+		"check-types": "tsc",
+		"prettier": "prettier --ignore-path .gitignore --write \"**/*.+(js|json|ts|tsx)\"",
+		"format": "npm run prettier -- --write",
+		"check-format": "npm run prettier -- --list-different",
+		"validate": "npm-run-all --parallel check-types check-format lint",
+		"prepare": "husky install"
+   },
+   "lint-staged": {
+		"*.+(js|ts|tsx)": [
+			"eslint"
+		],
+		"**/*.+(js|json|ts|tsx)": [
+			"prettier --write",
+			"git add"
+		],
+		"*.--write": "prettier --write"
+	}
 }
