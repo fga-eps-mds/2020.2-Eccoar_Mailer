@@ -1,8 +1,8 @@
 import * as Queue from 'bull';
-import { NodeMailerProvider } from '../services/NodeMailerProvider';
-import { MailerProvider } from '../services/MailerProvider';
+import { NodeMailerProvider } from '@services/NodeMailerProvider';
+import { MailerProvider } from '@services/MailerProvider';
 import * as env from 'dotenv';
-import { EmailTemplate } from '../utils/EmailTemplate';
+import { EmailTemplate } from '@utils/EmailTemplate';
 
 env.config();
 

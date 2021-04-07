@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import QueueServices from '../services/QueueServices';
-import { EmailTemplate } from '../utils/EmailTemplate';
+import QueueServices from '@services/QueueServices';
+import { EmailTemplate } from '@utils/EmailTemplate';
 
 import * as dotenv from 'dotenv';
 

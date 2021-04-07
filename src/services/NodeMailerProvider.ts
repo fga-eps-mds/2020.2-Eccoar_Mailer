@@ -1,6 +1,6 @@
 import { MailerProvider } from './MailerProvider';
 import * as nodemailer from 'nodemailer';
-import { EmailTemplate } from '../utils/EmailTemplate';
+import { EmailTemplate } from '@utils/EmailTemplate';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

@@ -1,6 +1,6 @@
-import ControllerMailer from '../src/controllers/ControllerMailer';
+import ControllerMailer from '@controllers/ControllerMailer';
 import { Request, Response } from 'express';
-import QueueServices from '../src/services/QueueServices';
+import QueueServices from '@services/QueueServices';
 
 const mockResponse = () => {
 	const res: Response = {} as Response;

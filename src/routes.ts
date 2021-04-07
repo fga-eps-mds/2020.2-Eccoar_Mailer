@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import ControllerMailer from './controllers/ControllerMailer';
+import ControllerMailer from '@controllers/ControllerMailer';
 
 const routers = Router();
 const controller = new ControllerMailer();
