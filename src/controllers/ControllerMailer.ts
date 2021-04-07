@@ -22,18 +22,22 @@ export default class ControllerMailer {
         resp.status(200).json(pingPong);
     }
 
-    sendEmail(req: Request, resp: Response): void {
-        const reportName = String(req.body.reportName);
-        const category = String(req.body.category);
-        const location = String(req.body.location);
-        if (reportName !== 'undefined' && category !== 'undefined' && location !== 'undefined') {
-            const emailCategory = CategoryEmail[category];
-            const emailMessage = this.buildEmailMessage(location, emailCategory);
-            this.queueService.addMailQueue(emailMessage);
-            this.queueService.emailQueueProcess();
-            resp.sendStatus(200);
-        } else {
-            resp.status(400).json({'error': 'error to get email values'});
+    async sendEmail(req: Request, resp: Response): Promise<Response> {
+        try {
+            const reportName = String(req.body.reportName);
+            const category = String(req.body.category);
+            const location = String(req.body.location);
+            if (reportName !== 'undefined' && category !== 'undefined' && location !== 'undefined') {
+                const emailCategory = CategoryEmail[category];
+                const emailMessage = this.buildEmailMessage(location, emailCategory);
+                this.queueService.addMailQueue(emailMessage);
+                this.queueService.emailQueueProcess();
+                return resp.sendStatus(200);
+            } else {
+                return resp.status(400).json({'error': 'error to get email values'});
+            }
+        } catch {
+            return resp.status(400).json({'error': 'error to get email values'});
         }
     }
 
