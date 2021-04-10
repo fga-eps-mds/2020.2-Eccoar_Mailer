@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as cors from 'cors';
-import morgan from 'morgan';
+import * as morgan from 'morgan';
 import routers from './routes';
 import handleErrors from './utils/errors';
 
