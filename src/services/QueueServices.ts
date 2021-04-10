@@ -11,7 +11,7 @@ const { REDIS_URL } = process.env;
 export default class QueueServices {
     mailerProvider: MailerProvider;
     queue: Queue.Queue;
-    options: object;
+    options: Record<string, unknown>;
 
     constructor() {
         this.options = {attemps: 2, delay: 5000}
