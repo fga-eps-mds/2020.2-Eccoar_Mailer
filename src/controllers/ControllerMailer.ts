@@ -14,7 +14,7 @@ export default class ControllerMailer {
 		resp.status(200).json(pingPong);
 	}
 
-	sendEmail(req: Request, resp: Response): void {
+	sendEmail(req: Request, resp: Response): any {
 		const email = String(req.query.email);
 		const subject = String(req.query.subject);
 		const text = String(req.query.text);
