@@ -18,6 +18,7 @@ export default class ControllerMailer {
 		const email = String(req.query.email);
 		const subject = String(req.query.subject);
 		const text = String(req.query.text);
+		console.log('AAAA');
 		if (
 			email !== 'undefined' &&
 			subject !== 'undefined' &&
