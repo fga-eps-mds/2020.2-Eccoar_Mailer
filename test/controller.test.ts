@@ -2,6 +2,16 @@ import ControllerMailer from '@controllers/ControllerMailer';
 import { NextFunction, Request, Response } from 'express';
 import QueueServices from '@services/QueueServices';
 
+const mockTransport = () => ({
+    sendMail: jest.fn((_email, callback) => callback()),
+    close: jest.fn()
+});
+
+jest.mock('nodemailer', () => ({
+    ...(jest.requireActual('nodemailer')),
+    createTransport: jest.fn(() => mockTransport())
+}));
+
 const mockResponse = () => {
 	const res: Response = {} as Response;
 	res.status = jest.fn().mockReturnValue(res);
