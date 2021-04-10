@@ -4,7 +4,7 @@ module.exports = {
 	collectCoverage: true,
 	testPathIgnorePatterns: ['build'],
 	testResultsProcessor: 'jest-sonar-reporter',
-	coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/', '/db/'],
+	coveragePathIgnorePatterns: ['/node_modules/', '/tests/', '/db/'],
 	moduleNameMapper: {
 		'@controllers/(.*)': '<rootDir>/src/controllers/$1',
 		'@services/(.*)': '<rootDir>/src/services/$1',
