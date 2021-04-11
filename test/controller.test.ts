@@ -3,13 +3,13 @@ import { NextFunction, Request, Response } from 'express';
 import QueueServices from '@services/QueueServices';
 
 const mockTransport = () => ({
-    sendMail: jest.fn((_email, callback) => callback()),
-    close: jest.fn()
+	sendMail: jest.fn((_email, callback) => callback()),
+	close: jest.fn(),
 });
 
 jest.mock('nodemailer', () => ({
-    ...(jest.requireActual('nodemailer')),
-    createTransport: jest.fn(() => mockTransport())
+	...jest.requireActual('nodemailer'),
+	createTransport: jest.fn(() => mockTransport()),
 }));
 
 const mockResponse = () => {
@@ -32,48 +32,60 @@ describe('pong', () => {
 });
 
 describe('Test Send Email Controller', () => {
-	test("Test if send emails is success", () => {
-        const controller = new ControllerMailer();
-        const mReq = {} as Request;
-        mReq.body = {
-            reportName: "mockName",
-            category: "mockCategory",
-            location: "mockLocation"
-        }
+	test('Test if send emails is success', () => {
+		const controller = new ControllerMailer();
+		const mReq = {} as Request;
+		mReq.body = {
+			reportName: 'mockName',
+			category: 'mockCategory',
+			location: 'mockLocation',
+		};
 
-        jest.spyOn(QueueServices.prototype, 'addMailQueue').mockImplementation(() => Promise.resolve(null));
-        jest.spyOn(QueueServices.prototype, 'emailQueueProcess').mockImplementation(() => Promise.resolve(null));
+		jest.spyOn(
+			QueueServices.prototype,
+			'addMailQueue',
+		).mockImplementation(() => Promise.resolve(null));
+		jest.spyOn(
+			QueueServices.prototype,
+			'emailQueueProcess',
+		).mockImplementation(() => Promise.resolve(null));
 
-        const mResp = mockResponse();
-        controller.sendEmail(mReq, mResp, null);
-        expect(mResp.sendStatus).toHaveBeenCalledWith(200);
+		const mResp = mockResponse();
+		controller.sendEmail(mReq, mResp, null);
+		expect(mResp.sendStatus).toHaveBeenCalledWith(200);
 	});
 
-    test("Test if send emails is not a success", async () => {
-        const controller = new ControllerMailer();
-        const mReq = {} as Request;
-        mReq.body = {
-            reportName: '',
-            category: '',
-            location: ''
-        };
-        const mNext = () => {
-            mResp.status(400).json({
-                status: 'error',
-                message: 'Missing fields reportName, category, location'
-            });
-        };
+	test('Test if send emails is not a success', async () => {
+		const controller = new ControllerMailer();
+		const mReq = {} as Request;
+		mReq.body = {
+			reportName: '',
+			category: '',
+			location: '',
+		};
+		const mNext = () => {
+			mResp.status(400).json({
+				status: 'error',
+				message: 'Missing fields reportName, category, location',
+			});
+		};
 
-        jest.spyOn(QueueServices.prototype, 'addMailQueue').mockImplementation(() => Promise.resolve(null));
-        jest.spyOn(QueueServices.prototype, 'emailQueueProcess').mockImplementation(() => Promise.resolve(null));
+		jest.spyOn(
+			QueueServices.prototype,
+			'addMailQueue',
+		).mockImplementation(() => Promise.resolve(null));
+		jest.spyOn(
+			QueueServices.prototype,
+			'emailQueueProcess',
+		).mockImplementation(() => Promise.resolve(null));
 
 		const mResp = mockResponse();
 
-        await controller.sendEmail(mReq, mResp, mNext as NextFunction);
-        expect(mResp.status).toHaveBeenCalledWith(400);
-        expect(mResp.json).toHaveBeenCalledWith({
-            status: 'error',
-            message: 'Missing fields reportName, category, location'
-        });
-    });
+		await controller.sendEmail(mReq, mResp, mNext as NextFunction);
+		expect(mResp.status).toHaveBeenCalledWith(400);
+		expect(mResp.json).toHaveBeenCalledWith({
+			status: 'error',
+			message: 'Missing fields reportName, category, location',
+		});
+	});
 });

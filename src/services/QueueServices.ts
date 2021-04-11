@@ -14,8 +14,8 @@ export default class QueueServices {
 	options: Record<string, unknown>;
 
 	constructor() {
-		this.options = {attemps: 2, delay: 5000}
-        this.queue = new Queue('send-email-queue', REDIS_URL, this.options);
+		this.options = { attemps: 2, delay: 5000 };
+		this.queue = new Queue('send-email-queue', REDIS_URL, this.options);
 		this.mailerProvider = new NodeMailerProvider();
 	}
 
