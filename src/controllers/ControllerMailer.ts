@@ -1,12 +1,20 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import QueueServices from '@services/QueueServices';
 import { EmailTemplate } from '@utils/EmailTemplate';
 
 import * as dotenv from 'dotenv';
+import { CategoryEmail } from '@utils/CategoryEmail';
+import { BadRequest } from '@utils/errors';
 
 dotenv.config();
 
 export default class ControllerMailer {
+	queueService: QueueServices;
+
+	constructor() {
+		this.queueService = new QueueServices();
+	}
+
 	pong(req: Request, resp: Response): void {
 		const pingPong = {
 			ping: 'pong',
@@ -14,36 +22,43 @@ export default class ControllerMailer {
 		resp.status(200).json(pingPong);
 	}
 
-	sendEmail(req: Request, resp: Response): void {
-		const email = String(req.query.email);
-		const subject = String(req.query.subject);
-		const text = String(req.query.text);
-		if (
-			email !== 'undefined' &&
-			subject !== 'undefined' &&
-			text !== 'undefined'
-		) {
-			const emailMessage = this.buildEmailMessage(email, subject, text);
-			const queueService = new QueueServices();
-			const options = { attempts: 2, delay: 5000 };
-			queueService.addMailQueue(emailMessage, options);
-			queueService.emailQueueProcess();
-			resp.sendStatus(200);
-		} else {
-			resp.status(400).json({ error: 'error to get email values' });
+	async sendEmail(
+		req: Request,
+		resp: Response,
+		next: NextFunction,
+	): Promise<Response> {
+		try {
+			const reportName = String(req.body.reportName);
+			const category = String(req.body.category);
+			const location = String(req.body.location);
+			if (!reportName || !category || !location) {
+				const missingFields = [];
+				if (!reportName) missingFields.push('reportName');
+				if (!category) missingFields.push('category');
+				if (!location) missingFields.push('location');
+				throw new BadRequest(`Missing fields ${missingFields}`);
+			}
+
+			const emailCategory =
+				CategoryEmail[category as keyof typeof CategoryEmail];
+			const emailMessage = this.buildEmailMessage(
+				location,
+				emailCategory,
+			);
+			this.queueService.addMailQueue(emailMessage);
+			this.queueService.emailQueueProcess();
+			return resp.sendStatus(200);
+		} catch (err) {
+			next(err);
 		}
 	}
 
-	buildEmailMessage(
-		email: string,
-		subject: string,
-		text: string,
-	): EmailTemplate {
+	buildEmailMessage(location: string, emailCategory: string): EmailTemplate {
 		return {
 			from: process.env.EMAIL,
-			to: email,
-			subject: subject,
-			text: text,
+			to: emailCategory,
+			subject: `RELATÓRIO ECCOAR ${new Date().toDateString()}`,
+			text: `Aqui está o seu relatório do projeto eccoar\nLink: ${location}`,
 		};
 	}
 }

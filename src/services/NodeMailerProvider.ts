@@ -6,10 +6,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export class NodeMailerProvider implements MailerProvider {
-	nodeMailerProvider: nodemailer.Transporter;
+	transporter: nodemailer.Transporter;
 
 	constructor() {
-		this.nodeMailerProvider = nodemailer.createTransport({
+		this.transporter = nodemailer.createTransport({
 			host: process.env.SERVICE,
 			logger: true,
 			secure: true,
@@ -25,13 +25,13 @@ export class NodeMailerProvider implements MailerProvider {
 	async sendMail(email: EmailTemplate): Promise<void> {
 		console.log('>>>>> SEND EMAIL');
 		return new Promise((resolve, reject) => {
-			this.nodeMailerProvider.sendMail(email, (err, response) => {
+			this.transporter.sendMail(email, (err, response) => {
 				if (err) {
 					reject(err);
 				}
 				resolve(response);
 			});
-			this.nodeMailerProvider.close();
+			this.transporter.close();
 		});
 	}
 }

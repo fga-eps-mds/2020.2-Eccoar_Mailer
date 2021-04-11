@@ -11,14 +11,16 @@ const { REDIS_URL } = process.env;
 export default class QueueServices {
 	mailerProvider: MailerProvider;
 	queue: Queue.Queue;
+	options: Record<string, unknown>;
 
 	constructor() {
-		this.queue = new Queue('send-email-queue', REDIS_URL);
+		this.options = { attemps: 2, delay: 5000 };
+		this.queue = new Queue('send-email-queue', REDIS_URL, this.options);
 		this.mailerProvider = new NodeMailerProvider();
 	}
 
-	addMailQueue(email: EmailTemplate, options: Queue.JobOptions): void {
-		this.queue.add(email, options);
+	addMailQueue(email: EmailTemplate): void {
+		this.queue.add(email);
 	}
 
 	emailQueueProcess(): void {
