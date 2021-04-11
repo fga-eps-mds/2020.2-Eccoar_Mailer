@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 export class GeneralError {
     message: string;
@@ -20,7 +20,7 @@ export class GeneralError {
 export class BadRequest extends GeneralError {}
 export class NotFound extends GeneralError {}
 
-const handleErrors = (err: Error | GeneralError, _req: Request, resp: Response): void => {
+const handleErrors = (err: Error | GeneralError, _req: Request, resp: Response, _next: NextFunction): void => {
     if(err instanceof GeneralError) {
         resp.status(err.getCode()).json({
             status: 'error',
