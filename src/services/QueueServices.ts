@@ -11,16 +11,16 @@ const { REDIS_URL } = process.env;
 export default class QueueServices {
 	mailerProvider: MailerProvider;
 	queue: Queue.Queue;
-	options: Record<string, unknown>;
+	options: Record<string, number>;
 
 	constructor() {
-		this.options = { attemps: 2, delay: 5000 };
-		this.queue = new Queue('send-email-queue', REDIS_URL, this.options);
+		this.options = { attemps: 3, delay: 60000, static: 5000 };
+		this.queue = new Queue('send-email-queue', REDIS_URL);
 		this.mailerProvider = new NodeMailerProvider();
 	}
 
 	addMailQueue(email: EmailTemplate): void {
-		this.queue.add(email);
+		this.queue.add(email, this.options);
 	}
 
 	emailQueueProcess(): void {
@@ -34,7 +34,7 @@ export default class QueueServices {
 				})
 				.catch((err) => {
 					console.log('>>>> Job Failed: ' + err.message);
-					job.moveToFailed({ message: 'job failed' });
+					job.moveToFailed({ message: err.message });
 				});
 		});
 	}
