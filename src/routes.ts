@@ -1,5 +1,4 @@
-import { NextFunction } from 'connect';
-import { Router, Request, Response } from 'express';
+import { NextFunction, Router, Request, Response } from 'express';
 
 import ControllerMailer from '@controllers/ControllerMailer';
 

@@ -13,6 +13,7 @@ export default class ControllerMailer {
 
 	constructor() {
 		this.queueService = new QueueServices();
+		this.queueService.emailQueueProcess();
 	}
 
 	pong(req: Request, resp: Response): void {
@@ -46,7 +47,6 @@ export default class ControllerMailer {
 				emailCategory,
 			);
 			this.queueService.addMailQueue(emailMessage);
-			this.queueService.emailQueueProcess();
 			return resp.sendStatus(200);
 		} catch (err) {
 			next(err);
