@@ -1,6 +1,5 @@
 import { MailerProvider } from './MailerProvider';
 import * as nodemailer from 'nodemailer';
-import * as nodemailerSendgrid from 'nodemailer-sendgrid';
 import { EmailTemplate } from '@utils/EmailTemplate';
 import * as dotenv from 'dotenv';
 
@@ -10,11 +9,17 @@ export class NodeMailerProvider implements MailerProvider {
 	transporter: nodemailer.Transporter;
 
 	constructor() {
-		this.transporter = nodemailer.createTransport(
-			nodemailerSendgrid({
-				apiKey: process.env.SENDGRID_KEY,
-			}),
-		);
+		this.transporter = nodemailer.createTransport({
+			host: process.env.SERVICE,
+			logger: true,
+			secure: true,
+			requireTLS: true,
+			port: 465,
+			auth: {
+				user: process.env.EMAIL,
+				pass: process.env.PASS,
+			},
+		});
 	}
 
 	async sendMail(email: EmailTemplate): Promise<void> {

@@ -1,8 +1,8 @@
 import * as Queue from 'bull';
-import { NodeMailerProvider } from '@services/NodeMailerProvider';
 import { MailerProvider } from '@services/MailerProvider';
 import * as env from 'dotenv';
 import { EmailTemplate } from '@utils/EmailTemplate';
+import { factoryMailer } from '@utils/factoryMailer';
 
 env.config();
 
@@ -16,7 +16,7 @@ export default class QueueServices {
 	constructor() {
 		this.options = { attemps: 3, delay: 60000, static: 5000 };
 		this.queue = new Queue('send-email-queue', REDIS_URL);
-		this.mailerProvider = new NodeMailerProvider();
+		this.mailerProvider = factoryMailer();
 	}
 
 	addMailQueue(email: EmailTemplate): void {
