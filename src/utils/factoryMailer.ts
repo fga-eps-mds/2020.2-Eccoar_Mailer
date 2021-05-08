@@ -9,5 +9,7 @@ export const factoryMailer = (): MailerProvider => {
 	if (process.env.ENVIRONMENT === 'development') {
 		return new NodeMailerProvider();
 	}
-	return new SendGridProvider();
+	if (process.env.ENVIRONMENT === 'production') {
+		return new SendGridProvider();
+	}
 };
